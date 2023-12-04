@@ -4,8 +4,8 @@
 
 ; --- CONSTANTS --------------------------------------------------------------------------
 
-SCREEN_WIDTH    EQU     224<<1                                  ; SCREEN WIDTH (PX)
-SCREEN_HEIGHT   EQU     288<<1                                  ; SCREEN HEIGHT (PX)
+SCREEN_WIDTH    EQU     640                                     ; SCREEN WIDTH (PX)
+SCREEN_HEIGHT   EQU     576                                     ; SCREEN HEIGHT (PX)
 
 SCREEN_TRAP     EQU     1                                       ; SCREEN REFRESH TRAP
 SCREEN_IRQ      EQU     1                                       ; SCREEN INTERRUPT NUMBER
@@ -15,7 +15,7 @@ SCREEN_TIMER    EQU     20                                      ; SCREEN TIMER (
 ; --- VARIABLES --------------------------------------------------------------------------
 
 SCREEN_INT_CTR  DS.B    1                                       ; INTERRUPT COUNTER/FLAG
-                DS.W    0
+                DS.B    $FF
 
 ; ----------------------------------------------------------------------------------------
 ;  INITIALIZES THE SCREEN
@@ -86,6 +86,7 @@ SCREEN_UPDATE
                 MOVEM.W (SP)+, D0/D1
             
                 RTE
+
 
 
 

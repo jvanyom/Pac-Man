@@ -13,11 +13,11 @@
 ; --- DATA INCLUDES ----------------------------------------------------------------------
 
                 INCLUDE "DATA/TEXTURES.X68"     ; TEXTURES DATA
-                INCLUDE "DATA/MAPDATA.X68"      ; MAP DATA
+                INCLUDE "DATA/MAZEDATA.X68"     ; MAZE DATA
                 
 ; --- CODE INCLUDES ----------------------------------------------------------------------
                 
-                INCLUDE "MAP.X68"               ; MAP MANAGEMENT
+                INCLUDE "MAZE.X68"              ; MAZE MANAGEMENT
                 INCLUDE "PACMAN.X68"            ; PACMAN MANAGEMENT
 
 ; --- INITIALIZE -------------------------------------------------------------------------
@@ -26,7 +26,7 @@ START
                 ORI.W   #$0700, SR              ; DISABLE ALL INTERRUPTS
 
                 JSR     SYSTEM_INIT
-                JSR     MAP_INIT
+                JSR     MAZE_INIT
                 JSR     PACMAN_INIT
                 
 ; --- UPDATE -----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ START
 
 ; --- PLOT -------------------------------------------------------------------------------
 
-                JSR     MAP_PLOT
+                JSR     MAZE_PLOT
                 JSR     PACMAN_PLOT
 
                 TRAP    #SCREEN_TRAP
@@ -54,15 +54,6 @@ START
                 SIMHALT
 
                 END     START
-
-
-
-
-
-
-
-
-
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~

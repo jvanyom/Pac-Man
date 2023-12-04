@@ -4,68 +4,110 @@
 
 ; --- CONSTANTS --------------------------------------------------------------------------
 
-EMPTY_COLOR     EQU     $00000000               ; BLACK
 WALL_COLOR      EQU     $00FF0000               ; BLUE
+PELLET_COLOR    EQU     $00FFFFFF               ; WHITE
+DOOR_COLOR      EQU     $00FFC0CB               ; PINK
+
+PELLET_RADIUS   EQU     2
+PELLET_WIDTH    EQU     PELLET_RADIUS<<1
 
 ; --- LIST OF POINTERS TO PICTURES -------------------------------------------------------
 
-TEXTURES        DC.L    .EMPTY,.WALL
+TEXTURES        DC.L    .EMPTY,.PELLET,.WALL,.DOOR
 
-.EMPTY
+.EMPTY          RTS
+                
+.PELLET
                 MOVEM.L D0-D4,-(SP)
 
-                MOVE.L  #EMPTY_COLOR,D1
+                MOVE.L  #PELLET_COLOR,D1
 
-                MOVE.B  #80,D0                 ; CHANGE PEN COLOR
+                MOVE.B  #80,D0                              ; CHANGE PEN COLOR
                 TRAP    #15
 
-                MOVE.B  #81,D0                 ; CHANGE FILL COLOR
+                MOVE.B  #81,D0                              ; CHANGE FILL COLOR
                 TRAP    #15
 
-                MOVE.B  #87,D0                 ; PLOT RECTANGLE
+                MOVE.B  #88,D0                              ; PLOT CIRCLE
 
-                MOVE.L  D5,D1
-                MOVE.L  D6,D2
+                MOVEQ.L #TILE_RADIUS-PELLET_RADIUS,D1
+                ADD.L   D5,D1                               ; LEFT X
 
-                MOVE.W  #MAP_TILE_WIDTH,D3
-                ADD.W   D5,D3
+                MOVEQ.L #TILE_RADIUS-PELLET_RADIUS,D2
+                ADD.L   D6,D2                               ; UPPER Y
 
-                MOVE.W  #MAP_TILE_WIDTH,D4
-                ADD.W   D6,D4
+                MOVEQ.L #TILE_RADIUS+PELLET_RADIUS,D3
+                ADD.L   D5,D3                               ; RIGHT X
+
+                MOVEQ.L #TILE_RADIUS+PELLET_RADIUS,D4
+                ADD.L   D6,D4                               ; LOWER Y
 
                 TRAP    #15
 
                 MOVEM.L (SP)+,D0-D4
 
-                RTS
+                RTS            
 
 .WALL
                 MOVEM.L D0-D4,-(SP)
 
                 MOVE.L  #WALL_COLOR,D1
 
-                MOVE.B  #80,D0                 ; CHANGE PEN COLOR
+                MOVE.B  #80,D0                  ; CHANGE PEN COLOR
                 TRAP    #15
 
-                MOVE.B  #81,D0                 ; CHANGE FILL COLOR
+                MOVE.B  #81,D0                  ; CHANGE FILL COLOR
                 TRAP    #15
 
-                MOVE.B  #87,D0                 ; PLOT RECTANGLE
+                MOVE.B  #87,D0                  ; PLOT RECTANGLE
 
-                MOVE.L  D5,D1                  ; LEFT X
-                MOVE.L  D6,D2                  ; UPPER Y
+                MOVE.L  D5,D1                   ; LEFT X
+                MOVE.L  D6,D2                   ; UPPER Y
 
-                MOVE.W  #MAP_TILE_WIDTH,D3     ; RIGHT X
-                ADD.W   D5,D3
+                MOVE.L  #TILE_WIDTH,D3          ; RIGHT X
+                ADD.L   D5,D3
 
-                MOVE.W  #MAP_TILE_WIDTH,D4     ; LOWER Y
-                ADD.W   D6,D4
+                MOVE.L  #TILE_WIDTH,D4          ; LOWER Y
+                ADD.L   D6,D4
 
                 TRAP    #15
 
                 MOVEM.L (SP)+,D0-D4
 
                 RTS
+                
+.DOOR
+                MOVEM.L D0-D4,-(SP)
+
+                MOVE.L  #DOOR_COLOR,D1
+
+                MOVE.B  #80,D0                  ; CHANGE PEN COLOR
+                TRAP    #15
+
+                MOVE.B  #81,D0                  ; CHANGE FILL COLOR
+                TRAP    #15
+
+                MOVE.B  #87,D0                  ; PLOT RECTANGLE
+
+                MOVE.L  D5,D1                   ; LEFT X
+                ADDQ.L  #1,D1
+                
+                MOVE.L  D6,D2                   ; UPPER Y
+
+                MOVE.L  #TILE_WIDTH,D3          ; RIGHT X
+                ADD.L   D5,D3
+
+                MOVE.L  #2,D4
+                ADD.L   D6,D4                   ; LOWER Y
+
+                TRAP    #15
+
+                MOVEM.L (SP)+,D0-D4
+                
+                RTS
+
+
+
 
 
 

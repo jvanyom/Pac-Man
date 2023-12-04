@@ -4,15 +4,15 @@
 
 ; --- CONSTANTS --------------------------------------------------------------------------
 
-PACMAN_WIDTH    EQU     MAP_TILE_WIDTH                          ; SAME OF TILE WIDTH
+PACMAN_WIDTH    EQU     TILE_WIDTH                              ; SAME OF TILE WIDTH
 PACMAN_RADIUS   EQU     PACMAN_WIDTH>>1
 
-PACMAN_INIT_X   EQU     14*MAP_TILE_WIDTH                       ; HORIZONTAL TILES
-PACMAN_INIT_Y   EQU     27*MAP_TILE_WIDTH-PACMAN_RADIUS         ; VERTICAL TILES
+PACMAN_INIT_X   EQU     (MAZE_WIDTH>>1)*TILE_WIDTH              ; HORIZONTAL TILES
+PACMAN_INIT_Y   EQU     27*TILE_WIDTH-PACMAN_RADIUS             ; VERTICAL TILES
 
-PACMAN_INIT_SPD EQU     4                                       ; PIXELS
+PACMAN_SPEED    EQU     4                                       ; PIXELS
 
-PACMAN_INIT_MOT EQU     1                                       ; START MOVING TO LEFT (1000=DOWN | 0100=RIGHT | 0010=UP | 0001=LEFT)
+PACMAN_INIT_MOT EQU     0                                       ; %1000=[DOWN] | %0100=[RIGHT] | %0010=[UP] | %0001=[LEFT] | 0=[NOT MOVING]
 
 PACMAN_COLOR    EQU     $0000FFFF                               ; YELLOW
 
@@ -21,15 +21,12 @@ PACMAN_COLOR    EQU     $0000FFFF                               ; YELLOW
 PACMAN_X        DC.W    1
 PACMAN_Y        DC.W    1
 
-PACMAN_MOTION   DC.B    1
-                
-PACMAN_SPEED    DC.B    1
+PACMAN_MOTION   DS.B    2
 
 ; ----------------------------------------------------------------------------------------
 ;  INITALIZATION : CALCULATES INITIAL POSITION
 ; ----------------------------------------------------------------------------------------
 PACMAN_INIT
-                MOVE.B  #PACMAN_INIT_SPD,(PACMAN_SPEED)
                 MOVE.B  #PACMAN_INIT_MOT,(PACMAN_MOTION)
 
                 MOVE.W  #PACMAN_INIT_X,(PACMAN_X)
@@ -41,13 +38,15 @@ PACMAN_INIT
 ;  UPDATES THE PACMAN : CHECKS IF THERE IS A WALL IN THE FACING DIRECTION
 ; ----------------------------------------------------------------------------------------
 PACMAN_UPDATE
-                MOVEM.L D0-D4/A0,-(SP)
-                
-                LEA     MAPDATA,A0
-                
-                MOVE.B  (PACMAN_SPEED),D7
+                MOVEM.L D0-D2/D4-D5/D7/A0,-(SP)
+
+                LEA     MAZEDATA,A0
+
                 MOVE.B  (PACMAN_MOTION),D0
                 
+.PRESSED        
+                MOVE.B  D0,D4
+
                 MOVE.W  (PACMAN_X),D1
                 MOVE.W  (PACMAN_Y),D2
 
@@ -59,86 +58,76 @@ PACMAN_UPDATE
                 BCS     .RIGHT
                 LSR.B   #1,D0
                 BCS     .DOWN
-                BRA     .END
+                BRA     .CHECK_KEYBOARD
+                
+.NEXT           EQU     PACMAN_RADIUS+1
 
 .LEFT
-                SUB.W   #PACMAN_RADIUS+1,D1
+                SUB.W   #.NEXT,D1
 
+                MOVE.W  D2,D5
                 JSR     CAN_MOVE
-                BNE     .END
-
-                SUB.W   D7,(PACMAN_X)
-                BRA     .END
+                BNE     .CHECK_KEYBOARD
+                
+                BTST.L  #31,D0
+                BNE     .MOVED
+                
+                SUB.W   #PACMAN_SPEED,(PACMAN_X)
+                BRA     .MOVED
 
 .UP
-                SUB.W   #PACMAN_RADIUS+1,D2
+                SUB.W   #.NEXT,D2
 
+                MOVE.W  D1,D5                
                 JSR     CAN_MOVE
-                BNE     .END
+                BNE     .CHECK_KEYBOARD
                 
-                SUB.W   D7,(PACMAN_Y)
-                BRA     .END
+                BTST.L  #31,D0
+                BNE     .MOVED
 
-.RIGHT
-                ADD.W   #PACMAN_RADIUS+1,D1
+                SUB.W   #PACMAN_SPEED,(PACMAN_Y)
+                BRA     .MOVED
 
+.RIGHT          
+                ADD.W   #.NEXT,D1
+
+                MOVE.W  D2,D5
                 JSR     CAN_MOVE
-                BNE     .END
-
-                ADD.W   D7,(PACMAN_X)
-                BRA     .END
-
-.DOWN
-                ADD.W   #PACMAN_RADIUS+1,D2
-
-                JSR     CAN_MOVE
-                BNE     .END
-
-                ADD.W   D7,(PACMAN_Y)
-                BRA     .END
+                BNE     .CHECK_KEYBOARD
                 
-.END
+                BTST.L  #31,D0
+                BNE     .MOVED
+
+                ADD.W   #PACMAN_SPEED,(PACMAN_X)
+                BRA     .MOVED
+
+.DOWN                
+                ADD.W   #.NEXT,D2
+
+                MOVE.W  D1,D5
+                JSR     CAN_MOVE
+                BNE     .CHECK_KEYBOARD
+
+                BTST.L  #31,D0
+                BNE     .MOVED
+
+                ADD.W   #PACMAN_SPEED,(PACMAN_Y)
+                BRA     .MOVED
+
+.MOVED
+                MOVE.B  D4,(PACMAN_MOTION)
+                
+.CHECK_KEYBOARD
+                LSL.L   #1,D0
+                BCS     .END
+
                 MOVE.B  (KEYBOARD_VALUE),D0
-                BEQ     .NOT_PRESSED
+                BEQ     .END
                 
-                MOVE.B  D0,D4
-                
-                LSR.B   #1,D0
-                BCS     .HORIZONTAL
-                LSR.B   #1,D0
-                BCS     .VERTICAL
-                LSR.B   #1,D0
-                BCS     .HORIZONTAL
-                LSR.B   #1,D0
-                BCS     .VERTICAL
-                BRA     .NOT_PRESSED
-                
-.HORIZONTAL
-                MOVE.W  (PACMAN_Y),D1
-                ADD.W   #PACMAN_RADIUS,D1
-                
-                MOVE.W  #MAP_TILE_WIDTH-1,D2
-                AND.W   D2,D1
-                
-                BNE     .NOT_PRESSED
-                
-                MOVE.B  D4,(PACMAN_MOTION)
-                
-                BRA     .NOT_PRESSED
-                
-.VERTICAL
-                MOVE.W  (PACMAN_X),D1
-                ADD.W   #PACMAN_RADIUS,D1
-                
-                MOVE.W  #MAP_TILE_WIDTH-1,D2
-                AND.W   D2,D1
-                
-                BNE     .NOT_PRESSED
-                
-                MOVE.B  D4,(PACMAN_MOTION)
-                
-.NOT_PRESSED          
-                MOVEM.L (SP)+,D0-D4/A0
+                OR.L    #$80000000,D0
+                BRA     .PRESSED
+.END
+                MOVEM.L (SP)+,D0-D2/D4-D5/D7/A0
 
                 RTS
 
@@ -176,28 +165,25 @@ PACMAN_PLOT
                 RTS
                 
 CAN_MOVE
-                MOVEM.W D1-D2,-(SP)
+                MOVEM.L D1-D2/D5,-(SP)
 
-                DIVU.W  #MAP_TILE_WIDTH,D1
-                DIVU.W  #MAP_TILE_WIDTH,D2
-
-                MULU.W  #MAP_MAZE_WIDTH,D2
-
+                DIVU.W  #TILE_WIDTH,D1
+                DIVU.W  #TILE_WIDTH,D2
+                MULU.W  #MAZE_WIDTH,D2
                 ADD.W   D1,D2
-
-                MOVE.B  (A0,D2.W),D2
                 
-                MOVEM.W (SP)+,D1-D2
+                MOVE.B  (A0,D2.W),D2
+                BLT.S   .END
+                CMP.B   #1,D2
+                BGT.S   .END
+
+                ADD.W   #PACMAN_RADIUS,D5
+                AND.W   #TILE_WIDTH-1,D5
+
+.END
+                MOVEM.L (SP)+,D1-D2/D5
 
                 RTS
-
-
-
-
-
-
-
-
 
 
 
