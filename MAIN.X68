@@ -24,7 +24,7 @@
 ; --- INITIALIZE -------------------------------------------------------------------------
 
 START
-                ORI.W   #$0700, SR              ; DISABLE ALL INTERRUPTS
+                ORI.W   #$0700,SR               ; DISABLE ALL INTERRUPTS
 
                 JSR     SYSTEM_INIT
 
@@ -58,6 +58,7 @@ START
                 SIMHALT
 
                 END     START
+
 
 
 *~Font name~Courier New~

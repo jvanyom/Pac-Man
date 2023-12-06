@@ -1,5 +1,5 @@
 ; ========================================================================================
-; METHODS TO DRAW TEXTURES DEPENDING ON THE TILE TYPE
+; METHODS TO DRAW TEXTURES DEPENDING ON THE TILE ID
 ; ========================================================================================
 
 ; --- CONSTANTS --------------------------------------------------------------------------
@@ -112,6 +112,7 @@ TEXTURES        DC.L    .EMPTY,.PELLET,.TP,.WALL,.DOOR
                 MOVEM.L (SP)+,D0-D4
                 
                 RTS
+
 
 
 

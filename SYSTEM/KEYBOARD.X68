@@ -11,8 +11,6 @@ KEYBOARD_UP_KEY EQU     $26     ; UP    KEY CODE
 KEYBOARD_RG_KEY EQU     $27     ; RIGHT KEY CODE
 KEYBOARD_DW_KEY EQU     $28     ; DOWN  KEY CODE
 
-KEYBOARD_BIT_DW EQU     3
-
 ; --- VARIABLES --------------------------------------------------------------------------
 
 KEYBOARD_VALUE  DS.B    2       ; KEY STATE
@@ -57,6 +55,7 @@ KEYBOARD_READ
                 MOVEM.L (SP)+,D0-D3
 
                 RTE
+
 
 
 
