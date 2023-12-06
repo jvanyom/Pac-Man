@@ -4,11 +4,13 @@
 
 ; --- CONSTANTS --------------------------------------------------------------------------
 
+STARTING_ROW    EQU     27
+
 PACMAN_WIDTH    EQU     TILE_WIDTH                              ; SAME OF TILE WIDTH
 PACMAN_RADIUS   EQU     PACMAN_WIDTH>>1
 
 PACMAN_INIT_X   EQU     (MAZE_WIDTH>>1)*TILE_WIDTH              ; HORIZONTAL TILES
-PACMAN_INIT_Y   EQU     27*TILE_WIDTH-PACMAN_RADIUS             ; VERTICAL TILES
+PACMAN_INIT_Y   EQU     STARTING_ROW*TILE_WIDTH-PACMAN_RADIUS   ; VERTICAL TILES
 
 PACMAN_SPEED    EQU     4                                       ; PIXELS
 
@@ -18,8 +20,8 @@ PACMAN_COLOR    EQU     $0000FFFF                               ; YELLOW
 
 ; --- VARIABLES --------------------------------------------------------------------------
 
-PACMAN_X        DC.W    1
-PACMAN_Y        DC.W    1
+PACMAN_X        DS.W    1
+PACMAN_Y        DS.W    1
 
 PACMAN_MOTION   DS.B    2
 
@@ -38,7 +40,7 @@ PACMAN_INIT
 ;  UPDATES THE PACMAN : CHECKS IF THERE IS A WALL IN THE FACING DIRECTION
 ; ----------------------------------------------------------------------------------------
 PACMAN_UPDATE
-                MOVEM.L D0-D2/D4-D5/D7/A0,-(SP)
+                MOVEM.L D0-D5/D7/A0,-(SP)
 
                 LEA     MAZEDATA,A0
 
@@ -59,7 +61,7 @@ PACMAN_UPDATE
                 LSR.B   #1,D0
                 BCS     .DOWN
                 BRA     .CHECK_KEYBOARD
-                
+
 .NEXT           EQU     PACMAN_RADIUS+1
 
 .LEFT
@@ -67,7 +69,7 @@ PACMAN_UPDATE
 
                 MOVE.W  D2,D5
                 JSR     CAN_MOVE
-                BNE     .CHECK_KEYBOARD
+                BNE     .CHECK_IS_TP
                 
                 BTST.L  #31,D0
                 BNE     .MOVED
@@ -80,7 +82,7 @@ PACMAN_UPDATE
 
                 MOVE.W  D1,D5                
                 JSR     CAN_MOVE
-                BNE     .CHECK_KEYBOARD
+                BNE     .CHECK_IS_TP
                 
                 BTST.L  #31,D0
                 BNE     .MOVED
@@ -93,7 +95,7 @@ PACMAN_UPDATE
 
                 MOVE.W  D2,D5
                 JSR     CAN_MOVE
-                BNE     .CHECK_KEYBOARD
+                BNE     .CHECK_IS_TP
                 
                 BTST.L  #31,D0
                 BNE     .MOVED
@@ -106,14 +108,29 @@ PACMAN_UPDATE
 
                 MOVE.W  D1,D5
                 JSR     CAN_MOVE
-                BNE     .CHECK_KEYBOARD
+                BNE     .CHECK_IS_TP
 
                 BTST.L  #31,D0
                 BNE     .MOVED
 
                 ADD.W   #PACMAN_SPEED,(PACMAN_Y)
                 BRA     .MOVED
+                
+.CHECK_IS_TP
+                MOVE.W  (PACMAN_X),D1
+                MOVE.W  (PACMAN_Y),D2
+                
+                JSR     GET_TILE
+                CMP.B   #TP_ID,D3
+                BNE     .CHECK_KEYBOARD
+                
+                SUB.W   #SCREEN_WIDTH,D1
+                BPL     .TELEPORT
+                NEG.W   D1
 
+.TELEPORT
+                MOVE.W  D1,(PACMAN_X)
+                
 .MOVED
                 MOVE.B  D4,(PACMAN_MOTION)
                 
@@ -126,8 +143,9 @@ PACMAN_UPDATE
                 
                 OR.L    #$80000000,D0
                 BRA     .PRESSED
+
 .END
-                MOVEM.L (SP)+,D0-D2/D4-D5/D7/A0
+                MOVEM.L (SP)+,D0-D5/D7/A0
 
                 RTS
 
@@ -163,27 +181,34 @@ PACMAN_PLOT
                 MOVEM.W (SP)+,D0-D4
 
                 RTS
-                
-CAN_MOVE
-                MOVEM.L D1-D2/D5,-(SP)
 
-                DIVU.W  #TILE_WIDTH,D1
-                DIVU.W  #TILE_WIDTH,D2
-                MULU.W  #MAZE_WIDTH,D2
-                ADD.W   D1,D2
-                
-                MOVE.B  (A0,D2.W),D2
+; ----------------------------------------------------------------------------------------
+;  CHECK IF PACMAN CAN MOVE IN THE SPECIFIED X & Y COORDINATES:
+;
+;       PAC-MAN CAN MOVE IF THE TILE ID IS 0 (EMPTY),1 (PELLET) OR 2 (TP) AND IF THE 
+;       POSITION IS MULTIPLE OF 16 (TILE_WIDTH)
+;
+; FLAGS:
+;       - Z=1 IF CAN MOVE
+;       - Z=0 IF CAN NOT MOVE
+; ----------------------------------------------------------------------------------------        
+CAN_MOVE
+                MOVEM.W D3/D5,-(SP)
+
+                JSR     GET_TILE
                 BLT.S   .END
-                CMP.B   #1,D2
+
+                CMP.B   #TP_ID,D3
                 BGT.S   .END
 
                 ADD.W   #PACMAN_RADIUS,D5
                 AND.W   #TILE_WIDTH-1,D5
 
 .END
-                MOVEM.L (SP)+,D1-D2/D5
+                MOVEM.W (SP)+,D3/D5
 
                 RTS
+
 
 
 

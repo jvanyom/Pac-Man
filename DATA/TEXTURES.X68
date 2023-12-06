@@ -11,17 +11,24 @@ DOOR_COLOR      EQU     $00FFC0CB               ; PINK
 PELLET_RADIUS   EQU     2
 PELLET_WIDTH    EQU     PELLET_RADIUS<<1
 
+EMPTY_ID        EQU     0
+PELLET_ID       EQU     1
+TP_ID           EQU     2
+WALL_ID         EQU     3
+DOOR_ID         EQU     4
+
+
 ; --- LIST OF POINTERS TO PICTURES -------------------------------------------------------
 
-TEXTURES        DC.L    .EMPTY,.PELLET,.WALL,.DOOR
+TEXTURES        DC.L    .EMPTY,.PELLET,.TP,.WALL,.DOOR
 
+.TP
 .EMPTY          RTS
                 
 .PELLET
                 MOVEM.L D0-D4,-(SP)
 
                 MOVE.L  #PELLET_COLOR,D1
-
                 MOVE.B  #80,D0                              ; CHANGE PEN COLOR
                 TRAP    #15
 
@@ -46,7 +53,7 @@ TEXTURES        DC.L    .EMPTY,.PELLET,.WALL,.DOOR
 
                 MOVEM.L (SP)+,D0-D4
 
-                RTS            
+                RTS
 
 .WALL
                 MOVEM.L D0-D4,-(SP)
@@ -105,6 +112,8 @@ TEXTURES        DC.L    .EMPTY,.PELLET,.WALL,.DOOR
                 MOVEM.L (SP)+,D0-D4
                 
                 RTS
+
+
 
 
 

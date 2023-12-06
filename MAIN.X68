@@ -19,6 +19,7 @@
                 
                 INCLUDE "MAZE.X68"              ; MAZE MANAGEMENT
                 INCLUDE "PACMAN.X68"            ; PACMAN MANAGEMENT
+                INCLUDE "SCORE.X68"             ; SCORE MANAGEMENT                
 
 ; --- INITIALIZE -------------------------------------------------------------------------
 
@@ -26,14 +27,16 @@ START
                 ORI.W   #$0700, SR              ; DISABLE ALL INTERRUPTS
 
                 JSR     SYSTEM_INIT
-                JSR     MAZE_INIT
+
                 JSR     PACMAN_INIT
+                JSR     SCORE_INIT
                 
 ; --- UPDATE -----------------------------------------------------------------------------
 
 .LOOP
                 TRAP    #KEYBOARD_TRAP
                 JSR     PACMAN_UPDATE
+                JSR     SCORE_UPDATE
 
 ; --- SYNCH ------------------------------------------------------------------------------
 
@@ -46,6 +49,7 @@ START
 
                 JSR     MAZE_PLOT
                 JSR     PACMAN_PLOT
+                JSR     SCORE_PLOT
 
                 TRAP    #SCREEN_TRAP
 
@@ -54,6 +58,8 @@ START
                 SIMHALT
 
                 END     START
+
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
