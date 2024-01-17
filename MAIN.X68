@@ -1,25 +1,16 @@
 ; ========================================================================================
 ; TITLE    : PAC-MAN
-; AUTHOR   : PERE ANTONI PRATS i JORDI VANYÓ
+; AUTHOR   : JORDI VANYÓ MESTRE
 ; CREATION : 08-NOV-2023
 ; ========================================================================================
 
                 ORG     $1000
 
-; --- SYSTEM INCLUDES ----------------------------------------------------------------------
+; --- INCLUDES -------------------------------------------------------------------
 
-                INCLUDE "SYSTEM/SYSTEM.X68"     ; SYSTEM CODE
-                
-; --- DATA INCLUDES ----------------------------------------------------------------------
-
-                INCLUDE "DATA/TEXTURES.X68"     ; TEXTURES DATA
-                INCLUDE "DATA/MAZEDATA.X68"     ; MAZE DATA
-                
-; --- CODE INCLUDES ----------------------------------------------------------------------
-                
-                INCLUDE "MAZE.X68"              ; MAZE MANAGEMENT
-                INCLUDE "PACMAN.X68"            ; PACMAN MANAGEMENT
-                INCLUDE "SCORE.X68"             ; SCORE MANAGEMENT                
+                INCLUDE "LIB/STR.X68"
+                INCLUDE "SYSTEM/SYSTEM.X68"
+                INCLUDE "STATES/STATES.X68"
 
 ; --- INITIALIZE -------------------------------------------------------------------------
 
@@ -27,16 +18,13 @@ START
                 ORI.W   #$0700,SR               ; DISABLE ALL INTERRUPTS
 
                 JSR     SYSTEM_INIT
-
-                JSR     PACMAN_INIT
-                JSR     SCORE_INIT
+                JSR     STATE_INIT
                 
 ; --- UPDATE -----------------------------------------------------------------------------
 
 .LOOP
                 TRAP    #KEYBOARD_TRAP
-                JSR     PACMAN_UPDATE
-                JSR     SCORE_UPDATE
+                JSR     STATE_UPDATE
 
 ; --- SYNCH ------------------------------------------------------------------------------
 
@@ -47,10 +35,7 @@ START
 
 ; --- PLOT -------------------------------------------------------------------------------
 
-                JSR     MAZE_PLOT
-                JSR     PACMAN_PLOT
-                JSR     SCORE_PLOT
-
+                JSR     STATE_PLOT
                 TRAP    #SCREEN_TRAP
 
                 BRA     .LOOP
@@ -58,8 +43,6 @@ START
                 SIMHALT
 
                 END     START
-
-
 
 *~Font name~Courier New~
 *~Font size~10~

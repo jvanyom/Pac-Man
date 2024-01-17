@@ -5,14 +5,38 @@
 ; --- CONSTANTS --------------------------------------------------------------------------
 
 MAZE_WIDTH      EQU     40                          ; TILES PER SCREEN HORIZONTALLY
-
 MAZE_HEIGHT     EQU     36                          ; TILES PER SCREEN VERTICALLY
+
+MAZE_BYTES      EQU     MAZE_WIDTH*MAZE_HEIGHT
 
 TILE_WIDTH      EQU     16
 TILE_RADIUS     EQU     TILE_WIDTH>>1
 
+; --- VARIABLES --------------------------------------------------------------------------
+MAZE_FILE       DC.B    'DATA/MAZEDATA.bin',0
+MAZEDATA        DS.B    MAZE_BYTES
+                DS.W    0
+
 ; ----------------------------------------------------------------------------------------
-;  PLOTS THE MAP
+; INIT MAZE : LOAD IT FROM BINARY FILE
+; ----------------------------------------------------------------------------------------
+MAZE_INIT
+                MOVEM.L D0-D2/A1,-(SP)
+
+                LEA     MAZE_FILE,A1
+                MOVE.B  #51,D0
+                TRAP    #15
+                
+                LEA     MAZEDATA,A1
+                MOVE.L  #MAZE_BYTES,D2
+                MOVE.B  #53,D0
+                TRAP    #15
+                
+                MOVEM.L (SP)+,D0-D2/A1
+                RTS
+
+; ----------------------------------------------------------------------------------------
+; PLOTS THE MAZE
 ; ----------------------------------------------------------------------------------------
 MAZE_PLOT
                 MOVEM.L D0-D1/D5-D7/A0-A2,-(SP)
@@ -48,12 +72,12 @@ MAZE_PLOT
 ; ----------------------------------------------------------------------------------------
 ;  GET TILE ADDRESS BY X & Y COORDINATES
 ;
-;  INPUT        : D1 - X
-;                 D2 - Y
+;  INPUT        : D1.W - X
+;                 D2.W - Y
 ;
 ;  MODIFILES    : A0 - TILE ADDRESS
 ; ----------------------------------------------------------------------------------------                
-GET_TILE_ADDRESS
+GET_TILE
                 MOVEM.L D1-D2,-(SP)
 
                 DIVU.W  #TILE_WIDTH,D1
@@ -68,24 +92,8 @@ GET_TILE_ADDRESS
 
                 RTS
 
-; ----------------------------------------------------------------------------------------
-;  GET TILE ID BY X & Y COORDINATES
-;
-;  INPUT        : D1 - X
-;                 D2 - Y
-;
-;  MODIFILES    : D3 - TILE ID
-; ----------------------------------------------------------------------------------------             
-GET_TILE
-                MOVE.L  A0,-(SP)
 
-                JSR     GET_TILE_ADDRESS
 
-                MOVE.B  (A0),D3
-
-                MOVE.L  (SP)+,A0
-
-                RTS
 
 *~Font name~Courier New~
 *~Font size~10~

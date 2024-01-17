@@ -15,7 +15,7 @@ SCREEN_TIMER    EQU     20                                      ; SCREEN TIMER (
 ; --- VARIABLES --------------------------------------------------------------------------
 
 SCREEN_INT_CTR  DS.B    1                                       ; INTERRUPT COUNTER/FLAG
-                DS.B    $FF
+SCREEN_CYC_CTR  DS.B    1                                       ; CYCLE COUNTER
 
 ; ----------------------------------------------------------------------------------------
 ;  INITIALIZES THE SCREEN
@@ -51,12 +51,13 @@ SCREEN_INIT
                 TRAP    #15
 
                 MOVE.B  #%10000000|SCREEN_IRQ,D2                ; ENABLE AUTO-IRQ
-                MOVE.B  #SCREEN_TIMER,D3
+                MOVE.L  #SCREEN_TIMER,D3
                 MOVE.B  #6,D1
                 MOVE.B  #32,D0
                 TRAP    #15
 
                 CLR.B   (SCREEN_INT_CTR)                        ; PREPARE INTERRUPT FLAG
+                CLR.B   (SCREEN_CYC_CTR)
 
                 MOVEM.L (SP)+,D0-D3
 
@@ -67,6 +68,7 @@ SCREEN_INIT
 ; ----------------------------------------------------------------------------------------
 SCREEN_ISR
                 ADDQ.B  #1,(SCREEN_INT_CTR)                     ; UPDATE INT FLAG/COUNTER
+                ADDQ.B  #1,(SCREEN_CYC_CTR)
 
                 RTE
 
@@ -86,6 +88,12 @@ SCREEN_UPDATE
                 MOVEM.W (SP)+,D0/D1
             
                 RTE
+
+
+
+
+
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
