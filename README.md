@@ -1,19 +1,5 @@
-GameInternals - Understanding Pac-Man Ghost Behavior  
-
-[GameInternals](/)
-
-All theory, no practice
-
-GameInternals aims to spread knowledge of interesting game mechanics beyond the game-specific enthusiast communities. Each post focuses on a specific game mechanic that would normally only be known to high-level players of a particular game, and attempts to explain it in a manner that would be understandable even by readers unfamiliar with that game.
-
-GameInternals articles were researched and written by [Chad Birch](/cdn-cgi/l/email-protection#791a11181d390d10151d1c0a57171c0d), a gamer and programmer from Calgary, Alberta, Canada.
-
-[Understanding Pac-Man Ghost Behavior](https://gameinternals.com/understanding-pac-man-ghost-behavior)
+Understanding Pac-Man Ghost Behavior  
 ======================================================================================================
-
-Posted on December 2, 2010
-
-It only seems right for me to begin this blog with the topic that inspired me to start it in the first place. Not too long ago, I came across [Jamey Pittman's "Pac-Man Dossier"](https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php), which is a ridiculously-detailed explanation of the mechanics of Pac-Man. I found it absolutely fascinating, so this site is my attempt to discover and aggregate similarly-detailed information about other games (albeit in much smaller chunks). However, as a bit of a tribute, I'm going to start with Pac-Man as well, specifically the ghost AI. It's an interesting topic, and hopefully my explanation will be a bit more accessible than Jamey's, due to focusing on only the information relevant to ghost behavior.
 
 About the Game
 --------------
@@ -154,5 +140,3 @@ Sources
 *   [The Pac-Man Dossier](https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php), Jamey Pittman - practically the only source you need for anything related to Pac-Man. I did some original research to confirm a few statements here and there, but honestly, most of this article is just rearranged and reworded from Jamey's amazing work on the Dossier. Highly recommended reading if you enjoyed this article and would like to learn about the other aspects of the game.
 *   [Pac-Man's Ghost Behaviour Analyzed and Fixed](http://donhodges.com/pacman_pinky_explanation.htm), Don Hodges - explanation of Pinky and Inky's targeting bug and some of the relevant Z80 assembly code.
 *   All Toru Iwatani quotes come from an interview in _Programmers at Work_ by Susan M. Lammers. [The entire interview is available online here](https://programmersatwork.wordpress.com/toru-iwatani-1986-pacman-designer/).
-
-[Back to home page](https://gameinternals.com/)
