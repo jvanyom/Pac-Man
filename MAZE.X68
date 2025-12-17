@@ -18,7 +18,10 @@ MAZEDATA        DS.B    MAZE_BYTES
                 DS.W    0
 
 ; ----------------------------------------------------------------------------------------
-; INIT MAZE : LOAD IT FROM BINARY FILE
+; INIT MAZE : LOAD IT FROM BINARY FILE (DATA/MAZEDATA.bin)
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 MAZE_INIT
                 MOVEM.L D0-D2/A1,-(SP)
@@ -37,6 +40,10 @@ MAZE_INIT
 
 ; ----------------------------------------------------------------------------------------
 ; PLOTS THE MAZE
+; ITERATES THROUGH MAZEDATA BUFFER AND DRAWS CORRESPONDING TILES VIA TEXTURES LOOKUP
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 MAZE_PLOT
                 MOVEM.L D0-D1/D5-D7/A0-A2,-(SP)

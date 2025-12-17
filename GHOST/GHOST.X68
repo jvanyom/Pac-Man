@@ -38,6 +38,13 @@ GHOST_INIT
 
 ; ----------------------------------------------------------------------------------------
 ; UPDATES ALL GHOSTS
+; MANAGES THE GLOBAL SCATTER/CHASE TIMER:
+; - SCATTER: 7 SECONDS
+; - CHASE: 20 SECONDS
+; SWITCHES GHOST_MODE FLAG WHEN TIMER EXPIRES
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 GHOST_UPDATE
                 CMP.B   #CHASE,(GHOST_MODE)

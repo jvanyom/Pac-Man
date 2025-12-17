@@ -22,7 +22,11 @@ POKEY_X        DS.W    1
 POKEY_Y        DS.W    1
 
 ; ----------------------------------------------------------------------------------------
+; POKEY INIT
+; SETS STARTING POSITION AND MOTION
 ;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 POKEY_INIT
                 MOVE.B  #POKEY_INIT_MOT,(POKEY_MOTION)
@@ -32,7 +36,17 @@ POKEY_INIT
                 RTS
 
 ; ----------------------------------------------------------------------------------------
+; POKEY UPDATE
 ;
+; 1. CHECKS IF ALIGNED WITH TILE CENTER
+; 2. DETERMINES TARGET:
+;    - SCATTER: BOTTOM-RIGHT CORNER
+;    - CHASE: PACMAN POSITION
+; 3. CALLS GHOST_NEXT_MOTION TO DECIDE NEXT MOVE
+; 4. EXECUTES AGENT_TRY2MOVE
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 POKEY_UPDATE
                 MOVEM.L D0-D2/D5-D7/A0,-(SP)
@@ -82,7 +96,11 @@ POKEY_UPDATE
                 RTS
 
 ; ----------------------------------------------------------------------------------------
+; POKEY PLOT
+; DRAWS ORANGE GHOST SPRITE
 ;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 POKEY_PLOT
                 MOVEM.L D1-D3,-(SP)

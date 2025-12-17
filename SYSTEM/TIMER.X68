@@ -12,7 +12,11 @@ TIMER_IRQ       EQU     2
 TIMER           DS.W    1
 
 ; ----------------------------------------------------------------------------------------   
+;  INITIALIZES THE MFP TIMER
+;  SETS UP A 1-SECOND INTERVAL INTERRUPT FOR GAME TIMING
 ;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 TIMER_INIT
                 MOVEM.L D0-D3,-(SP)
@@ -32,7 +36,11 @@ TIMER_INIT
                 RTS
 
 ; ----------------------------------------------------------------------------------------   
+;  TIMER INTERRUPT SERVICE ROUTINE
+;  INCREMENTS THE GLOBAL TIMER EVERY SECOND
 ;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 TIMER_ISR       
                 ADDQ.W  #1,(TIMER)

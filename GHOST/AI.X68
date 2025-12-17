@@ -13,16 +13,20 @@ MAX_CHECKS  EQU     3
 MOTIONS     DC.W    LEFT<<8|RIGHT,UP<<8|DOWN,RIGHT<<8|LEFT,DOWN<<8|UP
 
 ; ----------------------------------------------------------------------------------------
+; ----------------------------------------------------------------------------------------
 ; GET NEXT GHOST MOTION BASED ON DISTANCE TO TARGET TILE COORDINATES
+; 1. ITERATES THROUGH ALL VALID MOTIONS (UP, DOWN, LEFT, RIGHT)
+; 2. FILTERS OUT REVERSE DIRECTIONS AND WALL COLLISIONS
+; 3. CALCULATES CHEBYSHEV DISTANCE FOR EACH VALID MOVE TO THE TARGET
+; 4. SELECTS THE MOVE WITH MINIMUM DISTANCE
 ;
-; INPUT  : D5.B : MOTION
+; INPUT  : D5.B : MOTION (CURRENT FACING DIRECTION)
 ;          A0   : GHOST X AND Y IN THE CONSECUTIVE WORD
-;
-;
 ;          D7.L : 31-16 : TARGET Y
 ;                 15-0  : TARGET X
 ;
 ; OUTPUT : D5.B : NEXT MOTION
+; MODIFIES: D0-D4, D6-D7, A1
 ; ----------------------------------------------------------------------------------------
 GHOST_NEXT_MOTION
                 MOVEM.L D0-D4/D6-D7/A0-A1,-(SP)
@@ -73,6 +77,8 @@ GHOST_NEXT_MOTION
 
 ; ----------------------------------------------------------------------------------------
 ; GET CHEBYSHOV DISTANCE BETWEEN TWO POINTS
+; DISTANCE = MAX(|X1-X2|, |Y1-Y2|)
+; USED AS HEURISTIC FOR GHOST PATHFINDING
 ;
 ; INPUT  : D6.L : 31-16 : CURRENT Y
 ;                 15-0  : CURRENT X

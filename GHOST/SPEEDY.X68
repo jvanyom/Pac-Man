@@ -23,7 +23,11 @@ SPEEDY_X        DS.W    1
 SPEEDY_Y        DS.W    1
 
 ; ----------------------------------------------------------------------------------------
+; SPEEDY INIT
+; SETS STARTING POSITION AND MOTION
 ;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 SPEEDY_INIT
                 MOVE.B  #SPEEDY_INIT_MOT,(SPEEDY_MOTION)
@@ -33,7 +37,16 @@ SPEEDY_INIT
                 RTS
 
 ; ----------------------------------------------------------------------------------------
+; SPEEDY UPDATE
+; 1. CHECKS IF ALIGNED WITH TILE CENTER
+; 2. DETERMINES TARGET:
+;    - SCATTER: TOP-LEFT CORNER
+;    - CHASE: PACMAN POSITION
+; 3. CALLS GHOST_NEXT_MOTION TO DECIDE NEXT MOVE
+; 4. EXECUTES AGENT_TRY2MOVE
 ;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 SPEEDY_UPDATE
                 MOVEM.L D0-D2/D5-D7/A0,-(SP)
@@ -83,7 +96,11 @@ SPEEDY_UPDATE
                 RTS
 
 ; ----------------------------------------------------------------------------------------
+; SPEEDY PLOT
+; DRAWS PINK GHOST SPRITE
 ;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 SPEEDY_PLOT
                 MOVEM.L D1-D3,-(SP)

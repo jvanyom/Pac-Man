@@ -24,8 +24,11 @@ TEXTURES        DC.L    .EMPTY,.PELLET,.TP,.WALL,.DOOR
 
 .TP
 .EMPTY          RTS
-                
+
 .PELLET
+; DRAWS A WHITE CIRCLE FOR PELLETS
+; INPUT: D5 (X), D6 (Y)
+
                 MOVEM.L D0-D4,-(SP)
 
                 MOVE.L  #PELLET_COLOR,D1
@@ -56,6 +59,9 @@ TEXTURES        DC.L    .EMPTY,.PELLET,.TP,.WALL,.DOOR
                 RTS
 
 .WALL
+; DRAWS A BLUE RECTANGLE FLUSH WITH THE TILE BOUNDARIES
+; INPUT: D5 (X), D6 (Y)
+
                 MOVEM.L D0-D4,-(SP)
 
                 MOVE.L  #WALL_COLOR,D1
@@ -83,6 +89,9 @@ TEXTURES        DC.L    .EMPTY,.PELLET,.TP,.WALL,.DOOR
                 RTS
                 
 .DOOR
+; DRAWS A PINK RECTANGLE (GHOST HOUSE DOOR)
+; INPUT: D5 (X), D6 (Y)
+
                 MOVEM.L D0-D4,-(SP)
 
                 MOVE.L  #DOOR_COLOR,D1

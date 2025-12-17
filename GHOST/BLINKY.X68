@@ -23,7 +23,8 @@ BLINKY_X        DS.W    1
 BLINKY_Y        DS.W    1
 
 ; ----------------------------------------------------------------------------------------
-;
+; BLINKY_INIT
+; Initializes Blinky's position and initial motion.
 ; ----------------------------------------------------------------------------------------
 BLINKY_INIT
                 MOVE.B  #BLINKY_INIT_MOT,(BLINKY_MOTION)
@@ -33,7 +34,16 @@ BLINKY_INIT
                 RTS
 
 ; ----------------------------------------------------------------------------------------
+; BLINKY UPDATE
+; 1. CHECKS IF ALIGNED WITH TILE CENTER
+; 2. DETERMINES TARGET:
+;    - SCATTER: TOP-RIGHT CORNER
+;    - CHASE: PACMAN POSITION
+; 3. CALLS GHOST_NEXT_MOTION TO DECIDE NEXT MOVE
+; 4. EXECUTES AGENT_TRY2MOVE
 ;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 BLINKY_UPDATE
                 MOVEM.L D0-D2/D5-D7/A0,-(SP)
@@ -83,7 +93,11 @@ BLINKY_UPDATE
                 RTS
 
 ; ----------------------------------------------------------------------------------------
+; BLINKY PLOT
+; DRAWS RED GHOST SPRITE
 ;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 BLINKY_PLOT
                 MOVEM.L D1-D3,-(SP)

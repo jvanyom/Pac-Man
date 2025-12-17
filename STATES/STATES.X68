@@ -20,6 +20,10 @@ STARTED         DS.B    2
 
 ; -----------------------------------------------------------------------------
 ; INITALIZES THE STATE MANAGER
+; RESETS STATE VARIABLES AND FLAGS
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; -----------------------------------------------------------------------------
 STATE_INIT
                 MOVE.W  #STATE_NONE,(STATE_CURRENT)
@@ -30,6 +34,13 @@ STATE_INIT
 
 ; -----------------------------------------------------------------------------
 ; PERFORMS STATE UPDATE AND INIT IF NECESSARY
+; HANDLES:
+; 1. STARTUP SEQUENCE (MUSIC + DELAY)
+; 2. STATE TRANSITIONS (DETECT CHANGE -> RUN OLD STATE INIT)
+; 3. CURRENT STATE UPDATE (RUN UPDATE FUNCTION POINTER)
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; -----------------------------------------------------------------------------
 STATE_UPDATE
                 MOVEM.L D0/D7/A0/A6,-(SP)
@@ -80,6 +91,10 @@ STATE_UPDATE
 
 ; -----------------------------------------------------------------------------
 ; PERFORMS STATE PLOT
+; EXECUTES THE DRAWING ROUTINE FOR THE CURRENT ACTIVE STATE
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; -----------------------------------------------------------------------------
 STATE_PLOT
                 MOVEM.L D0/A0/A6,-(SP)

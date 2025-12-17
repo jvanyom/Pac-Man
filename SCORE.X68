@@ -30,6 +30,12 @@ SCORE_INIT
 
 ; ----------------------------------------------------------------------------------------
 ;  UPDATES SCORE : SUM POINTS IF PAC-MAN CROSSES PELLET TILES & CHANGE IT TO EMPTY TILES
+;  1. CHECKS MAX SCORE (WIN CONDITION)
+;  2. GETS CURRENT PACMAN TILE
+;  3. IF TILE IS PELLET -> PLAY SOUND, CLEAR TILE, ADD SCORE
+;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 SCORE_UPDATE
                 MOVEM.L D1-D2/A0,-(SP)
@@ -64,6 +70,10 @@ SCORE_UPDATE
 
 ; ----------------------------------------------------------------------------------------
 ;  PLOTS SCORE
+;  DRAWS THE HUD AND THE NUMERIC SCORE VALUE
+;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 SCORE_PLOT      
                 MOVEM.L D0-D2/A1,-(SP)

@@ -17,6 +17,10 @@ KEYBOARD_VALUE  DS.B    2       ; KEY STATE
 
 ; ----------------------------------------------------------------------------------------
 ;  INITIALIZES THE KEYBOARD
+;  INSTALLS THE TRAP HANDLER FOR READING INPUT
+;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 KEYBOARD_INIT
                 MOVE.L  #KEYBOARD_READ,($80+KEYBOARD_TRAP*4)       ; INSTALL TRAP
@@ -31,7 +35,8 @@ KEYBOARD_INIT
 ; KEYBOARD_VALUE HOLDS THE CURRENT VALUES AND KEYBOARD_EDGE HOLDS RISING EDGES FROM
 ; PREVIOUS CALL TO THE CURRENT ONE.
 ;
-; OUTPUT   - (KEYBOARD_VALUE) AND (KEYBOARD_EDGE)
+; INPUT    : NONE (READS HARDWARE VIA TRAP #15)
+; OUTPUT   : NONE (UPDATES KEYBOARD_VALUE)
 ; ----------------------------------------------------------------------------------------
 KEYBOARD_READ
                 MOVEM.L D0-D3,-(SP)

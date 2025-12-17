@@ -23,7 +23,11 @@ BASHFUL_X        DS.W    1
 BASHFUL_Y        DS.W    1
 
 ; ----------------------------------------------------------------------------------------
+; BASHFUL INIT
+; SETS STARTING POSITION AND MOTION
 ;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 BASHFUL_INIT
                 MOVE.B  #BASHFUL_INIT_MOT,(BASHFUL_MOTION)
@@ -33,7 +37,16 @@ BASHFUL_INIT
                 RTS
 
 ; ----------------------------------------------------------------------------------------
+; BASHFUL UPDATE
+; 1. CHECKS IF ALIGNED WITH TILE CENTER
+; 2. DETERMINES TARGET:
+;    - SCATTER: BOTTOM-LEFT CORNER
+;    - CHASE: PACMAN POSITION
+; 3. CALLS GHOST_NEXT_MOTION TO DECIDE NEXT MOVE
+; 4. EXECUTES AGENT_TRY2MOVE
 ;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 BASHFUL_UPDATE
                 MOVEM.L D0-D2/D5-D7/A0,-(SP)
@@ -83,7 +96,11 @@ BASHFUL_UPDATE
                 RTS
 
 ; ----------------------------------------------------------------------------------------
+; BASHFUL PLOT
+; DRAWS CYAN GHOST SPRITE
 ;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 BASHFUL_PLOT
                 MOVEM.L D1-D3,-(SP)

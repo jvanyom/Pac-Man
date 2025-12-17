@@ -14,6 +14,10 @@
 
 ; ------------------------------------------------------------------------------
 ; INITIALIZES GAME
+; CALLS INIT ROUTINES FOR ALL GAME SUB-SYSTEMS (MAZE, PACMAN, GHOSTS, SCORE, HEALTH)
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ------------------------------------------------------------------------------
 GAME_INIT       
                 JSR     MAZE_INIT
@@ -24,6 +28,10 @@ GAME_INIT
 
 ; ------------------------------------------------------------------------------
 ; UPDATES THE GAME
+; EXECUTES LOGIC FOR ALL GAME ENTITIES
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ------------------------------------------------------------------------------
 GAME_UPDATE
                 JSR     PACMAN_UPDATE
@@ -33,6 +41,10 @@ GAME_UPDATE
 
 ; ------------------------------------------------------------------------------
 ; PLOTS THE GAME
+; RENDERS ALL GAME ENTITIES IN ORDER (MAZE -> STATIC, OTHERS -> DYNAMIC)
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ------------------------------------------------------------------------------
 GAME_PLOT
                 JSR     MAZE_PLOT

@@ -19,6 +19,15 @@ SCREEN_CYC_CTR  DS.B    1                                       ; CYCLE COUNTER
 
 ; ----------------------------------------------------------------------------------------
 ;  INITIALIZES THE SCREEN
+;
+;  - SETS RESOLUTION TO 640x576
+;  - SETS WINDOWED MODE
+;  - INITIALIZES DOUBLE BUFFERING (VISIBLE AND HIDDEN PAGE)
+;  - ENABLES INTERRUPTS (VBL)
+;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
+;  MODIFIES : D0-D3, HARDWARE REGISTERS
 ; ----------------------------------------------------------------------------------------
 SCREEN_INIT
                 MOVEM.L D0-D3,-(SP)
@@ -64,7 +73,13 @@ SCREEN_INIT
                 RTS
 
 ; ----------------------------------------------------------------------------------------
-;  SCREEN TIMED INTERRUPT SERVICE ROUTINE :
+; ----------------------------------------------------------------------------------------
+;  SCREEN TIMED INTERRUPT SERVICE ROUTINE (VBL)
+;  EXECUTED AUTOMATICALLY EVERY VERTICAL BLANK (APPROX 55/60Hz)
+;  UPDATES COUNTERS FOR MAIN LOOP SYNCHRONIZATION
+;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 SCREEN_ISR
                 ADDQ.B  #1,(SCREEN_INT_CTR)                     ; UPDATE INT FLAG/COUNTER
@@ -73,7 +88,15 @@ SCREEN_ISR
                 RTE
 
 ; ----------------------------------------------------------------------------------------
-;  TRAP SERVICE ROUTINE : CLEARING HIDDEN BUFFER AND UPDTAING DOUBLE BUFFER
+; ----------------------------------------------------------------------------------------
+;  TRAP SERVICE ROUTINE : FLIPS BUFFERS
+;  CALLED VIA 'TRAP #SCREEN_TRAP'
+;
+;  1. SWAPS VISIBLE AND HIDDEN SCREEN BUFFERS (DOUBLE BUFFERING)
+;  2. CLEARS THE NEW HIDDEN BUFFER FOR THE NEXT FRAME DRAWING
+;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 SCREEN_UPDATE
                 MOVEM.W D0/D1,-(SP)

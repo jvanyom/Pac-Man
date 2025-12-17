@@ -24,6 +24,11 @@ HEALTH_INIT
                 
 ; ----------------------------------------------------------------------------------------
 ; UPDATE HEALTH BASED ON PACMAN AND GHOSTS COLLISSION
+; CHECKS OVERLAP BETWEEN PACMAN AND ANY GHOST
+; IF COLLISION -> DECREMENT LIVES, RESET POSITIONS OR END GAME
+;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 HEALTH_UPDATE
                 MOVEM.L D0-D3/A1,-(SP)
@@ -101,6 +106,10 @@ HEALTH_UPDATE
 
 ; ----------------------------------------------------------------------------------------
 ; PLOT LIFES ACORDING TO PAC-MAN DESIGN
+; LOOPS THROUGH REMAINING LIVES AND DRAWS PACMAN ICONS AT BOTTOM LEFT
+;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 HEALTH_PLOT
                 MOVEM.L D0-D3,-(SP)

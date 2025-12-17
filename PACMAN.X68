@@ -28,7 +28,11 @@ PACMAN_INIT
                 RTS
 
 ; ----------------------------------------------------------------------------------------
-;  UPDATES THE PACMAN : CHECKS IF THERE IS A WALL IN THE FACING DIRECTION
+;  UPDATES THE PACMAN : CHECK IF THERE IS A WALL IN THE FACING DIRECTION
+;  ALSO POLLS KEYBOARD FOR NEW DIRECTION REQUESTS
+;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 PACMAN_UPDATE
                 MOVEM.L D0-D2/A0,-(SP)

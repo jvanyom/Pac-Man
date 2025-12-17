@@ -23,6 +23,11 @@ INTRO_INIT
       
 ; ----------------------------------------------------------------------------------------
 ; UPDATE INTRO SCREEN : CHECK IF ANY KEY IS PRESSED
+; IF KEY PRESSED -> SWITCH STATE TO GAME (ID 1)
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
+; MOFIDIES : STATE_NEXT
 ; ----------------------------------------------------------------------------------------
 INTRO_UPDATE
                 MOVEM.L D0-D1,-(SP)
@@ -61,6 +66,10 @@ INTRO_PLOT
 
 ; ----------------------------------------------------------------------------------------
 ; PLOT PAC-MAN TITLE IMAGE IN THE MIDDLE OF THE SCREEN
+; DECODES A RAW BINARY IMAGE (BYTE=1 -> YELLOW PIXEL) AND PLOTS IT VIA TRAP #15
+;
+; INPUT    : NONE
+; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 PLOT_TITLE
                 MOVEM.L D0-D4/A0,-(SP)

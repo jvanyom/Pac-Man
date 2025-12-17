@@ -16,6 +16,10 @@ DEATH2_SND      EQU     5
 
 ; ----------------------------------------------------------------------------------------
 ;  LOADS ALL FOREGROUND SOUNDS INTO SOUND PERIPHERAL MEMORY
+;  ITERATES THROUGH THE .SOUNDS LIST AND UPLOADS THEM VIA IOCS TRAP
+;
+;  INPUT    : NONE
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 SOUND_INIT
                 MOVEM.L D0-D1/A0-A1,-(SP)
@@ -50,9 +54,10 @@ SOUND_INIT
 
 ; ----------------------------------------------------------------------------------------
 ;  PLAY FOREGROUND
+;  STOPS CURRENTLY PLAYING SOUNDS AND TRIGGERS A NEW ONE
 ;
-;  INPUT    : D7.B : SOUND ID
-;
+;  INPUT    : D7.B : SOUND ID ( SEE CONSTANTS )
+;  OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 SOUND_PLAY
                 MOVEM.W D0-D2,-(SP)

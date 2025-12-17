@@ -48,10 +48,14 @@ AGENT_DROP      MACRO
 
 ; ----------------------------------------------------------------------------------------
 ; TRY TO MOVE AN AGENT TO DESIRED MOTION
+; 1. CHECKS IF AGENT IS ALIGNED WITH TILE CENTER (IF NOT, CONTINUES MOVING)
+; 2. CHECKS COLLISIONS (WALLS)
+; 3. CHECKS FOR TELEPORT TILES (TUNNEL)
+; 4. UPDATES POSITION IF VALID
 ;
 ; INPUT  : D0.B : MOTION
 ;          A0   : X AND Y IN THE CONSECUTIVE WORD
-;
+; OUTPUT : NONE
 ; ----------------------------------------------------------------------------------------
 AGENT_TRY2MOVE
                 MOVEM.L D1-D2/A0-A1,-(SP)
@@ -133,14 +137,14 @@ AGENT_PLOT
 
 ; ----------------------------------------------------------------------------------------
 ; CHECK IF AGENT CAN MOVE IN THE DESIRED MOTION
+; SIMULATES A STEP IN THE DESIRED DIRECTION AND CHECKS THE MAZE TILE ID
 ;
 ; INPUT  : D0.B  : MOTION
 ;          A0    : CURRENT X AND Y IN THE CONSECUTIVE WORD
 ;
-; OUTPUT : FLAGS : Z=0 IF CANNOT MOVE
+; OUTPUT : FLAGS : Z=0 IF CANNOT MOVE (WALL)
 ;        : D1.W  : NEXT POSSIBLE X
 ;        : D2.W  : NEXT POSSIBLE Y
-;         
 ; ----------------------------------------------------------------------------------------
                 
 AGENT_CAN_MOVE
@@ -211,9 +215,11 @@ AGENT_CAN_MOVE
 
 ; ----------------------------------------------------------------------------------------
 ; MOVE AGENT IN THE DESIRED MOTION
+; UPDATES THE AGENT'S X OR Y COORDINATE BY 'AGENT_SPEED'
 ;
 ; INPUT  : D0.B : MOTION
 ;          A0   : CURRENT X AND Y IN THE CONSECUTIVE WORD
+; OUTPUT : NONE (MODIFIES MEMORY AT A0)
 ; ----------------------------------------------------------------------------------------
 AGENT_MOVE
                 MOVEM.L D1-D4,-(SP)
