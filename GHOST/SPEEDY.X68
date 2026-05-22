@@ -97,20 +97,40 @@ SPEEDY_UPDATE
 
 ; ----------------------------------------------------------------------------------------
 ; SPEEDY PLOT
-; DRAWS PINK GHOST SPRITE
+; DRAWS PINK GHOST SPRITE: BODY (ANIM-FRAMED) + EYES (FACING SPEEDY_MOTION).
 ;
 ; INPUT    : NONE
 ; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 SPEEDY_PLOT
-                MOVEM.L D1-D3,-(SP)
+                MOVEM.L D0-D3/A0-A1,-(SP)
 
-                MOVE.L  #SPEEDY_COLOR,D1
+                ; --- BODY ---
+                CLR.W   D1
+                BTST.B  #3,(SCREEN_CYC_CTR)
+                BEQ     .NO_FRAME
+                MOVEQ   #1,D1
+.NO_FRAME
+                LSL.W   #2,D1
+                LEA     GHOST_BODIES,A0
+                MOVE.L  (A0,D1.W),A0
+                LEA     SPEEDY_PALETTE,A1
                 MOVE.W  (SPEEDY_Y),D2
                 MOVE.W  (SPEEDY_X),D3
-                JSR     AGENT_PLOT
-                
-                MOVEM.L (SP)+,D1-D3
+                JSR     SPRITE_DRAW
+
+                ; --- EYES ---
+                MOVE.B  (SPEEDY_MOTION),D0
+                JSR     MOTION_TO_DIR
+                LSL.W   #2,D0
+                LEA     GHOST_EYES,A0
+                MOVE.L  (A0,D0.W),A0
+                LEA     SPEEDY_PALETTE,A1
+                MOVE.W  (SPEEDY_Y),D2
+                MOVE.W  (SPEEDY_X),D3
+                JSR     SPRITE_DRAW
+
+                MOVEM.L (SP)+,D0-D3/A0-A1
 
                 RTS
 

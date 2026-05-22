@@ -97,20 +97,40 @@ BASHFUL_UPDATE
 
 ; ----------------------------------------------------------------------------------------
 ; BASHFUL PLOT
-; DRAWS CYAN GHOST SPRITE
+; DRAWS CYAN GHOST SPRITE: BODY (ANIM-FRAMED) + EYES (FACING BASHFUL_MOTION).
 ;
 ; INPUT    : NONE
 ; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 BASHFUL_PLOT
-                MOVEM.L D1-D3,-(SP)
+                MOVEM.L D0-D3/A0-A1,-(SP)
 
-                MOVE.L  #BASHFUL_COLOR,D1
+                ; --- BODY ---
+                CLR.W   D1
+                BTST.B  #3,(SCREEN_CYC_CTR)
+                BEQ     .NO_FRAME
+                MOVEQ   #1,D1
+.NO_FRAME
+                LSL.W   #2,D1
+                LEA     GHOST_BODIES,A0
+                MOVE.L  (A0,D1.W),A0
+                LEA     BASHFUL_PALETTE,A1
                 MOVE.W  (BASHFUL_Y),D2
                 MOVE.W  (BASHFUL_X),D3
-                JSR     AGENT_PLOT
-                
-                MOVEM.L (SP)+,D1-D3
+                JSR     SPRITE_DRAW
+
+                ; --- EYES ---
+                MOVE.B  (BASHFUL_MOTION),D0
+                JSR     MOTION_TO_DIR
+                LSL.W   #2,D0
+                LEA     GHOST_EYES,A0
+                MOVE.L  (A0,D0.W),A0
+                LEA     BASHFUL_PALETTE,A1
+                MOVE.W  (BASHFUL_Y),D2
+                MOVE.W  (BASHFUL_X),D3
+                JSR     SPRITE_DRAW
+
+                MOVEM.L (SP)+,D0-D3/A0-A1
 
                 RTS
 

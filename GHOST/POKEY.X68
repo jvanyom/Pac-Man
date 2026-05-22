@@ -97,20 +97,40 @@ POKEY_UPDATE
 
 ; ----------------------------------------------------------------------------------------
 ; POKEY PLOT
-; DRAWS ORANGE GHOST SPRITE
+; DRAWS ORANGE GHOST SPRITE: BODY (ANIM-FRAMED) + EYES (FACING POKEY_MOTION).
 ;
 ; INPUT    : NONE
 ; OUTPUT   : NONE
 ; ----------------------------------------------------------------------------------------
 POKEY_PLOT
-                MOVEM.L D1-D3,-(SP)
+                MOVEM.L D0-D3/A0-A1,-(SP)
 
-                MOVE.L  #POKEY_COLOR,D1
+                ; --- BODY ---
+                CLR.W   D1
+                BTST.B  #3,(SCREEN_CYC_CTR)
+                BEQ     .NO_FRAME
+                MOVEQ   #1,D1
+.NO_FRAME
+                LSL.W   #2,D1
+                LEA     GHOST_BODIES,A0
+                MOVE.L  (A0,D1.W),A0
+                LEA     POKEY_PALETTE,A1
                 MOVE.W  (POKEY_Y),D2
                 MOVE.W  (POKEY_X),D3
-                JSR     AGENT_PLOT
-                
-                MOVEM.L (SP)+,D1-D3
+                JSR     SPRITE_DRAW
+
+                ; --- EYES ---
+                MOVE.B  (POKEY_MOTION),D0
+                JSR     MOTION_TO_DIR
+                LSL.W   #2,D0
+                LEA     GHOST_EYES,A0
+                MOVE.L  (A0,D0.W),A0
+                LEA     POKEY_PALETTE,A1
+                MOVE.W  (POKEY_Y),D2
+                MOVE.W  (POKEY_X),D3
+                JSR     SPRITE_DRAW
+
+                MOVEM.L (SP)+,D0-D3/A0-A1
 
                 RTS
 

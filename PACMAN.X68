@@ -60,17 +60,32 @@ PACMAN_UPDATE
 
 ; ----------------------------------------------------------------------------------------
 ;  PLOTS THE PACMAN
+;  PICKS A 16x16 SPRITE BY FACING (DIR FROM PACMAN_MOTION) AND ANIMATION FRAME
+;  (SCREEN_CYC_CTR BIT 3 -> ~8-FRAME PERIOD MOUTH OPEN/CLOSED).
 ; ----------------------------------------------------------------------------------------
 PACMAN_PLOT
-                MOVEM.L D1-D3,-(SP)
+                MOVEM.L D0-D3/A0-A1,-(SP)
 
-                MOVE.L  #PACMAN_COLOR,D1
+                MOVE.B  (PACMAN_MOTION),D0          ; D0 = MOTION BITMASK
+                JSR     MOTION_TO_DIR               ; D0 = DIR INDEX (0..3)
+
+                CLR.W   D1                          ; D1 = ANIM FRAME (0 OR 1)
+                BTST.B  #3,(SCREEN_CYC_CTR)
+                BEQ     .NO_FRAME
+                MOVEQ   #1,D1
+.NO_FRAME
+                LSL.W   #1,D0                       ; DIR * 2
+                ADD.W   D1,D0                       ; + FRAME
+                LSL.W   #2,D0                       ; * 4 (LONG OFFSET)
+                LEA     PACMAN_SPRITES,A0
+                MOVE.L  (A0,D0.W),A0                ; A0 = SPRITE DATA PTR
+
+                LEA     PAC_PALETTE,A1
                 MOVE.W  (PACMAN_Y),D2
                 MOVE.W  (PACMAN_X),D3
-                
-                JSR     AGENT_PLOT
-                
-                MOVEM.L (SP)+,D1-D3
+                JSR     SPRITE_DRAW
+
+                MOVEM.L (SP)+,D0-D3/A0-A1
 
                 RTS
 

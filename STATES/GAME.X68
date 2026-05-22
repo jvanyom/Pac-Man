@@ -9,6 +9,7 @@
                 INCLUDE "AGENT.X68"
                 INCLUDE "PACMAN.X68"
                 INCLUDE "GHOST/GHOST.X68"
+                INCLUDE "SPRITES.X68"
                 INCLUDE "SCORE.X68"
                 INCLUDE "HEALTH.X68"
 
